@@ -29,10 +29,21 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -48,18 +59,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop1", group="Iterative Opmode")
-public class Teleop1 extends OpMode
+@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+
+public class Teleop extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor driveLeftFront;
-    private DcMotor driveRightFront;
-    private DcMotor driveLeftBack;
-    private DcMotor driveRightBack;
-    private DcMotor lift;
-
-    private static int LIFT_TOP = 5000;
+    private DcMotor left_Drive_Front;
+    private DcMotor right_Drive_Front;
+    private SensorBNO055IMU imu;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -71,19 +79,13 @@ public class Teleop1 extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        driveLeftFront = hardwareMap.get(DcMotor.class, "drive_left_front");
-        driveRightFront = hardwareMap.get(DcMotor.class, "drive_right_front");
-        driveLeftBack = hardwareMap.get(DcMotor.class, "drive_left_back");
-        driveRightBack = hardwareMap.get(DcMotor.class, "drive_right_back");
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_Drive_Front  = hardwareMap.get(DcMotor.class, "left_drive_front");
+        right_Drive_Front = hardwareMap.get(DcMotor.class, "right_drive_front");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        driveLeftFront.setDirection(DcMotor.Direction.REVERSE);
-        driveLeftBack.setDirection(DcMotor.Direction.REVERSE);
-        driveRightFront.setDirection(DcMotor.Direction.FORWARD);
-        driveRightBack.setDirection(DcMotor.Direction.FORWARD);
+        left_Drive_Front.setDirection(DcMotor.Direction.FORWARD);
+        right_Drive_Front.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -102,8 +104,6 @@ public class Teleop1 extends OpMode
     @Override
     public void start() {
         runtime.reset();
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /*
@@ -111,24 +111,64 @@ public class Teleop1 extends OpMode
      */
     @Override
     public void loop() {
-        if (gamepad1.a && lift.getCurrentPosition() >= 0) {
-            //lift.setTargetPosition(0);
-            lift.setPower(-0.5);
-        } else if (gamepad1.y && lift.getCurrentPosition() <= LIFT_TOP) {
-            //lift.setTargetPosition(LIFT_TOP);
-            lift.setPower(0.5);
-        } else {
-            lift.setPower(0);
+        // Setup a variable for each drive wheel to save power level for telemetry
+        double leftPower;
+        double rightPower;
+        left_Drive_Front.setPower(-gamepad1.left_stick_y);
+        right_Drive_Front.setPower(-gamepad1.right_stick_y);
+        //telemetry.addLine(SensorBNO055IMU);
+        imu.composeTelemetry();
+
+        // DPad Up - Drive forward
+        if ((gamepad1.dpad_up) && !(gamepad1.dpad_left) && !(gamepad1.dpad_right)){
+            left_Drive_Front.setPower(1);
+            right_Drive_Front.setPower(1);
         }
 
-        driveLeftFront.setPower(gamepad1.left_stick_y);
-        driveLeftBack.setPower(gamepad1.left_stick_y);
-        driveRightFront.setPower(gamepad1.right_stick_y);
-        driveRightBack.setPower(gamepad1.right_stick_y);
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Lift Encoder", lift.getCurrentPosition());
-        telemetry.addData("Set Position", lift.getTargetPosition());
+        // DPad Down - Drive Backward
+        if((gamepad1.dpad_down) && !(gamepad1.dpad_left) && !(gamepad1.dpad_right)){
+            left_Drive_Front.setPower(-1);
+            right_Drive_Front.setPower(-1);
+        }
+
+        // DPad Right - Turn Right on spot
+        if((gamepad1.dpad_right) && !(gamepad1.dpad_up) && !(gamepad1.dpad_down)){
+            left_Drive_Front.setPower(1);
+            right_Drive_Front.setPower(-1);
+        }
+
+        // DPad Left - Drive forward
+        if((gamepad1.dpad_left) && !(gamepad1.dpad_up) && !(gamepad1.dpad_down)){
+            left_Drive_Front.setPower(-1);
+            right_Drive_Front.setPower(1);
+        }
+
+
+
+
+        // DPad Up + Left - Drive forward and move left
+        if((gamepad1.dpad_left) && (gamepad1.dpad_up) && !(gamepad1.dpad_down) && !(gamepad1.dpad_right)){
+            left_Drive_Front.setPower(0.5);
+            right_Drive_Front.setPower(1);
+        }
+
+        // DPad Down + Left - Drive Backward and move left
+        if((gamepad1.dpad_left) && (gamepad1.dpad_down) && !(gamepad1.dpad_up) && !(gamepad1.dpad_right)){
+            left_Drive_Front.setPower(-0.5);
+            right_Drive_Front.setPower(-1);
+        }
+
+        // DPad Up + Right - Drive forward and move right
+        if((gamepad1.dpad_right) && (gamepad1.dpad_up) && !(gamepad1.dpad_down) && !(gamepad1.dpad_left)){
+            left_Drive_Front.setPower(1);
+            right_Drive_Front.setPower(0.5);
+        }
+
+        // DPad Down + Right - Drive Backward and more right
+        if((gamepad1.dpad_right) && (gamepad1.dpad_down) && !(gamepad1.dpad_up) && !(gamepad1.dpad_left)){
+            left_Drive_Front.setPower(-1);
+            right_Drive_Front.setPower(-0.5);
+        }
     }
 
     /*
