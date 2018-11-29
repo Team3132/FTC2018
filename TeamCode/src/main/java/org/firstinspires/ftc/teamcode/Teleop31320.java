@@ -61,9 +61,8 @@ public class Teleop31320 extends OpMode
     private DcMotor driveRightBack;
     private DcMotor liftMotor;
     private Lift31320 lift;
-    private DigitalChannel liftLimitSwitch;
+    private DigitalChannel limitSwitch;
 
-    private static int LIFT_TOP = 5000; // Lift Max Height
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -75,12 +74,13 @@ public class Teleop31320 extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        driveLeftFront = hardwareMap.get(DcMotor.class, "drive_left_front");
-        driveRightFront = hardwareMap.get(DcMotor.class, "drive_right_front");
-        driveLeftBack = hardwareMap.get(DcMotor.class, "drive_left_back");
-        driveRightBack = hardwareMap.get(DcMotor.class, "drive_right_back");
-        liftMotor = hardwareMap.get(DcMotor.class, "lift");
+        driveLeftFront = hardwareMap.get(DcMotor.class, "driveLeftFront");
+        driveRightFront = hardwareMap.get(DcMotor.class, "driveRightFront");
+        driveLeftBack = hardwareMap.get(DcMotor.class, "driveLeftBack");
+        driveRightBack = hardwareMap.get(DcMotor.class, "driveRightBack");
+        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        limitSwitch = hardwareMap.get(DigitalChannel.class, "liftLimitSwitch");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -91,6 +91,8 @@ public class Teleop31320 extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        lift = new Lift31320();
     }
 
     /*
@@ -115,14 +117,14 @@ public class Teleop31320 extends OpMode
     public void loop() {
         if (gamepad1.a) {
             lift.down();
-        } else if (gamepad1.y && lift.getCurrentPosition() <= LIFT_TOP) {
-            //lift.setTargetPosition(LIFT_TOP);
+        } else if (gamepad1.y) {
             lift.up();
         } else {
             lift.stop();
         }
         lift.update();
-        //Arcade Drive Code, does nothing when left & right
+
+        //Arcade Drive Code, does nothing when left & right pressed together
 
         if ((gamepad1.left_stick_y > 0 || gamepad1.left_stick_y < 0 ) && gamepad1.right_stick_x == 0){
             driveLeftFront.setPower(gamepad1.left_stick_y);
