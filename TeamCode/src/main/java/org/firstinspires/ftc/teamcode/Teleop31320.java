@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -61,7 +63,8 @@ public class Teleop31320 extends OpMode
     private DcMotor driveRightBack;
     private DcMotor liftMotor;
     private Lift31320 lift;
-    private DigitalChannel liftLimitSwitch;
+    private Servo marker;
+    private RevTouchSensor liftLimitSwitch;
 
     private static int LIFT_TOP = 5000; // Lift Max Height
 
@@ -75,12 +78,14 @@ public class Teleop31320 extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        driveLeftFront = hardwareMap.get(DcMotor.class, "drive_left_front");
-        driveRightFront = hardwareMap.get(DcMotor.class, "drive_right_front");
-        driveLeftBack = hardwareMap.get(DcMotor.class, "drive_left_back");
-        driveRightBack = hardwareMap.get(DcMotor.class, "drive_right_back");
+        driveLeftFront = hardwareMap.get(DcMotor.class, "driveLeftFront");
+        driveRightFront = hardwareMap.get(DcMotor.class, "driveRightFront");
+        driveLeftBack = hardwareMap.get(DcMotor.class, "driveLeftBack");
+        driveRightBack = hardwareMap.get(DcMotor.class, "driveRightBack");
         liftMotor = hardwareMap.get(DcMotor.class, "lift");
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        marker = hardwareMap.get(Servo.class, "marker");
+
+        liftLimitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -88,6 +93,10 @@ public class Teleop31320 extends OpMode
         driveLeftBack.setDirection(DcMotor.Direction.REVERSE);
         driveRightFront.setDirection(DcMotor.Direction.FORWARD);
         driveRightBack.setDirection(DcMotor.Direction.FORWARD);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        lift = new Lift31320(liftMotor, liftLimitSwitch);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -124,40 +133,27 @@ public class Teleop31320 extends OpMode
         lift.update();
         //Arcade Drive Code, does nothing when left & right
 
-        if ((gamepad1.left_stick_y > 0 || gamepad1.left_stick_y < 0 ) && gamepad1.right_stick_x == 0){
-            driveLeftFront.setPower(gamepad1.left_stick_y);
-            driveLeftBack.setPower(gamepad1.left_stick_y);
-            driveRightFront.setPower(gamepad1.left_stick_y);
-            driveRightBack.setPower(gamepad1.left_stick_y);
+
+        double x = gamepad1.right_stick_x;
+        double y = gamepad1.left_stick_y;
+
+        driveLeftBack.setPower(x+y);
+        driveLeftFront.setPower(x+y);
+        driveRightBack.setPower(x-y);
+        driveRightFront.setPower(x-y);
+
+        if (gamepad1.dpad_down) {
+            marker.setPosition(0.5);
+        } else if (gamepad1.dpad_up) {
+            marker.setPosition(1.0);
         }
-
-        else if ((gamepad1.right_stick_x > 0 || gamepad1.right_stick_x < 0 ) && gamepad1.left_stick_y == 0){
-            driveLeftFront.setPower(gamepad1.right_stick_x);
-            driveLeftBack.setPower(gamepad1.right_stick_x);
-            driveRightFront.setPower(-gamepad1.right_stick_x);
-            driveRightBack.setPower(-gamepad1.right_stick_x);
-        }
-
-        /*
-        else if (gamepad1.right_stick_x > 0 &&){
-
-        }
-        */
-        /*
-
-        Old Tank Drive Code
-
-        driveLeftFront.setPower(gamepad1.left_stick_y);
-        driveLeftBack.setPower(gamepad1.left_stick_y);
-        driveRightFront.setPower(gamepad1.right_stick_y);
-        driveRightBack.setPower(gamepad1.right_stick_y);
-        */
 
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Lift Encoder", lift.getCurrentPosition());
         telemetry.addData("Set Position", liftMotor.getTargetPosition());
+        telemetry.addData("Limit switch", liftLimitSwitch.isPressed());
     }
 
     /*
