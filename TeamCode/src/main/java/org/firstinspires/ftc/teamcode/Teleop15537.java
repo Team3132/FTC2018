@@ -50,8 +50,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="31320 Teleop", group="Iterative Opmode")
-public class Teleop31320 extends OpMode
+@TeleOp(name="15537 Teleop", group="Iterative Opmode")
+public class Teleop15537 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -60,7 +60,7 @@ public class Teleop31320 extends OpMode
     private DcMotor driveLeftBack;
     private DcMotor driveRightBack;
     private DcMotor liftMotor;
-    private Lift31320 lift;
+    private Lift15537 lift;
     private DigitalChannel limitSwitch;
 
 
@@ -92,7 +92,7 @@ public class Teleop31320 extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 
-        lift = new Lift31320();
+        lift = new Lift15537();
     }
 
     /*
