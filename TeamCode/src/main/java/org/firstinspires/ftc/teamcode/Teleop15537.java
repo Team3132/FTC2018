@@ -123,10 +123,10 @@ public class Teleop15537 extends OpMode
         double x = gamepad1.right_stick_x;
         double y = gamepad1.left_stick_y;
 
-        driveLeftBack.setPower(x+y);
-        driveLeftFront.setPower(x+y);
-        driveRightBack.setPower(x-y);
-        driveRightFront.setPower(x-y);
+        driveLeftBack.setPower(-y+x);
+        driveLeftFront.setPower(-y+x);
+        driveRightBack.setPower(-y-x);
+        driveRightFront.setPower(-y-x);
 
         if (gamepad1.dpad_down) {
             marker.setPosition(0.5);

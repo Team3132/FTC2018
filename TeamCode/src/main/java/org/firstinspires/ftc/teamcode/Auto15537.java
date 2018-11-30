@@ -54,6 +54,14 @@ public class Auto15537 extends OpMode
 
     private static int LIFT_TOP = 5000; // Lift Max Height
 
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (((COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415))/2.673);
+    static final double     DRIVE_SPEED             = 0.3;
+    static final double     TURN_SPEED              = 0.5;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -100,6 +108,27 @@ public class Auto15537 extends OpMode
      */
     @Override
     public void start() {
+        while (liftMotor.getCurrentPosition() != LIFT_TOP);
+            lift.up();
+        driveLeftBack.setPower(-0.3);
+        driveLeftFront.setPower(-0.3);
+        driveLeftBack.setPower(0.3);
+        driveLeftFront.setPower(0.3);
+        driveLeftBack.setPower(-0.3);
+        driveLeftFront.setPower(-0.3);
+        driveLeftBack.setPower(0.3);
+        driveLeftFront.setPower(0.3);
+        driveLeftBack.setPower(0);
+        driveLeftFront.setPower(0);
+
+        driveLeftBack.setPower(-0.5);
+        driveLeftFront.setPower(-0.5);
+        driveRightBack.setPower(-0.5);
+        driveRightFront.setPower(-0.5);
+        driveLeftBack.setPower(0);
+        driveLeftFront.setPower(0);
+        driveRightBack.setPower(0);
+        driveRightFront.setPower(0);
 
     }
 
@@ -109,6 +138,7 @@ public class Auto15537 extends OpMode
     @Override
     public void loop() {
 
+
     }
 
     /*
@@ -117,5 +147,6 @@ public class Auto15537 extends OpMode
     @Override
     public void stop() {
     }
+
 
 }
