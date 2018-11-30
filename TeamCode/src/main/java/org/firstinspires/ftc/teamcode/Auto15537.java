@@ -69,20 +69,23 @@ public class Auto15537 extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        // Names of Drive Motors in Green. Set the names of motors to these in config on driver station/robot controller phone.
+
         driveLeftFront = hardwareMap.get(DcMotor.class, "driveLeftFront");
         driveRightFront = hardwareMap.get(DcMotor.class, "driveRightFront");
         driveLeftBack = hardwareMap.get(DcMotor.class, "driveLeftBack");
         driveRightBack = hardwareMap.get(DcMotor.class, "driveRightBack");
+
+        // Lift motor name is "lift"
         liftMotor = hardwareMap.get(DcMotor.class, "lift");
+        // Servo name is "marker"
         marker = hardwareMap.get(Servo.class, "marker");
 
         liftLimitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
+
         driveLeftFront.setDirection(DcMotor.Direction.REVERSE);
         driveLeftBack.setDirection(DcMotor.Direction.REVERSE);
         driveRightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -108,8 +111,11 @@ public class Auto15537 extends OpMode
      */
     @Override
     public void start() {
-        while (liftMotor.getCurrentPosition() != LIFT_TOP);
+        // Raises the lift motor until it is at its highest.
+        while (liftMotor.getCurrentPosition() != LIFT_TOP) {
             lift.up();
+        }
+        // Does a 'wiggle' to free itself from the bar. May need to add sleep methods for this to work.
         driveLeftBack.setPower(-0.3);
         driveLeftFront.setPower(-0.3);
         driveLeftBack.setPower(0.3);
@@ -118,13 +124,17 @@ public class Auto15537 extends OpMode
         driveLeftFront.setPower(-0.3);
         driveLeftBack.setPower(0.3);
         driveLeftFront.setPower(0.3);
+        // Stops Motors from 'wiggling'
         driveLeftBack.setPower(0);
         driveLeftFront.setPower(0);
 
+
+        // Reverses away from lander
         driveLeftBack.setPower(-0.5);
         driveLeftFront.setPower(-0.5);
         driveRightBack.setPower(-0.5);
         driveRightFront.setPower(-0.5);
+        // [Sleep method goes here, for as long as needed]
         driveLeftBack.setPower(0);
         driveLeftFront.setPower(0);
         driveRightBack.setPower(0);
