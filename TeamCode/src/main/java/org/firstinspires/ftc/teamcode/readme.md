@@ -1,8 +1,8 @@
-## Team 31320
+## Team 15537
 
-Teleop31320.java is team 31320's teleop.
+Teleop15537.java is team 15537's teleop.
 
-Auto31320 is team 31320's auto.
+Auto15537 is team 15537's auto.
 
-Lift31320.java is used by both Teleop31320.java and Auto31320.java.
+Lift15537.java is used by both Teleop15537.java and Auto15537.java.
 

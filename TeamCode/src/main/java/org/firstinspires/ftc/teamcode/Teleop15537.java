@@ -38,22 +38,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@TeleOp(name="31320 Teleop", group="Iterative Opmode")
-public class Teleop31320 extends OpMode
+@TeleOp(name="15537 Teleop", group="Iterative Opmode")
+public class Teleop15537 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -62,7 +48,7 @@ public class Teleop31320 extends OpMode
     private DcMotor driveLeftBack;
     private DcMotor driveRightBack;
     private DcMotor liftMotor;
-    private Lift31320 lift;
+    private Lift15537 lift;
     private Servo marker;
     private RevTouchSensor liftLimitSwitch;
 
@@ -96,7 +82,7 @@ public class Teleop31320 extends OpMode
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        lift = new Lift31320(liftMotor, liftLimitSwitch);
+        lift = new Lift15537(liftMotor, liftLimitSwitch);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
