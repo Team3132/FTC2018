@@ -4,7 +4,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-public class Lift31320 {
+public class Lift15537 {
     private DcMotor motor;
     private RevTouchSensor limitSwitch;
 
@@ -19,7 +19,7 @@ public class Lift31320 {
 
     private State state;
 
-    public Lift31320(DcMotor lift, RevTouchSensor limitSwitch) {
+    public Lift15537(DcMotor lift, RevTouchSensor limitSwitch) {
         this.motor = lift;
         this.limitSwitch = limitSwitch;
         this.state = state.STOP;

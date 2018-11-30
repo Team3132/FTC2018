@@ -33,7 +33,6 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -52,8 +51,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="31320 Teleop", group="Iterative Opmode")
-public class Teleop31320 extends OpMode
+@TeleOp(name="15537 Teleop", group="Iterative Opmode")
+public class Teleop15537 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -62,7 +61,7 @@ public class Teleop31320 extends OpMode
     private DcMotor driveLeftBack;
     private DcMotor driveRightBack;
     private DcMotor liftMotor;
-    private Lift31320 lift;
+    private Lift15537 lift;
     private Servo marker;
     private RevTouchSensor liftLimitSwitch;
 
@@ -96,7 +95,7 @@ public class Teleop31320 extends OpMode
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        lift = new Lift31320(liftMotor, liftLimitSwitch);
+        lift = new Lift15537(liftMotor, liftLimitSwitch);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -137,10 +136,10 @@ public class Teleop31320 extends OpMode
         double x = gamepad1.right_stick_x;
         double y = gamepad1.left_stick_y;
 
-        driveLeftBack.setPower(x+y);
-        driveLeftFront.setPower(x+y);
-        driveRightBack.setPower(x-y);
-        driveRightFront.setPower(x-y);
+        driveLeftBack.setPower(-y+x);
+        driveLeftFront.setPower(-y+x);
+        driveRightBack.setPower(-y-x);
+        driveRightFront.setPower(-y-x);
 
         if (gamepad1.dpad_down) {
             marker.setPosition(0.5);
