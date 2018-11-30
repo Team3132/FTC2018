@@ -101,7 +101,7 @@ public class Teleop15540 extends OpMode
     public void loop() {
         if (gamepad1.a) {
             lift.down();
-        } else if (gamepad1.y && lift.getCurrentPosition() <= LIFT_TOP) {
+        } else if (gamepad1.y) {
             //lift.setTargetPosition(LIFT_TOP);
             lift.up();
         } else {
