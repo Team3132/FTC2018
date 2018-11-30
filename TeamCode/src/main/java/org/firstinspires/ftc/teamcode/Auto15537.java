@@ -118,12 +118,28 @@ public class Auto15537 extends OpMode
         // Does a 'wiggle' to free itself from the bar. May need to add sleep methods for this to work.
         driveLeftBack.setPower(-0.3);
         driveLeftFront.setPower(-0.3);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
         driveLeftBack.setPower(0.3);
         driveLeftFront.setPower(0.3);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
         driveLeftBack.setPower(-0.3);
         driveLeftFront.setPower(-0.3);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
         driveLeftBack.setPower(0.3);
         driveLeftFront.setPower(0.3);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
         // Stops Motors from 'wiggling'
         driveLeftBack.setPower(0);
         driveLeftFront.setPower(0);
@@ -134,7 +150,10 @@ public class Auto15537 extends OpMode
         driveLeftFront.setPower(-0.5);
         driveRightBack.setPower(-0.5);
         driveRightFront.setPower(-0.5);
-        // [Sleep method goes here, for as long as needed]
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+        }
         driveLeftBack.setPower(0);
         driveLeftFront.setPower(0);
         driveRightBack.setPower(0);
