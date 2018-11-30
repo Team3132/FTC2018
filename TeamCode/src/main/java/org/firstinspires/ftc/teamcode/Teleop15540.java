@@ -50,8 +50,6 @@ public class Teleop15540 extends OpMode
     private Lift15540 lift;
     private Servo marker;
 
-    private static int LIFT_TOP = 5000; // Lift Max Height
-
     /*
      * Code to run ONCE when the driver hits INIT
      */
