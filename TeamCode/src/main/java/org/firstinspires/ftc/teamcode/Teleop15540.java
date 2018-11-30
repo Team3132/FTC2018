@@ -37,20 +37,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
 @TeleOp(name="15540 Teleop", group="Iterative Opmode")
 public class Teleop15540 extends OpMode
 {
@@ -63,7 +49,6 @@ public class Teleop15540 extends OpMode
     private DcMotor liftMotor;
     private Lift15540 lift;
     private Servo marker;
-    private RevTouchSensor liftLimitSwitch;
 
     private static int LIFT_TOP = 5000; // Lift Max Height
 
@@ -74,9 +59,7 @@ public class Teleop15540 extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        // Names of motors and servo. Use these names in in-app config, selecting the right ports.
         driveLeftFront = hardwareMap.get(DcMotor.class, "driveLeftFront");
         driveRightFront = hardwareMap.get(DcMotor.class, "driveRightFront");
         driveLeftBack = hardwareMap.get(DcMotor.class, "driveLeftBack");
@@ -84,7 +67,6 @@ public class Teleop15540 extends OpMode
         liftMotor = hardwareMap.get(DcMotor.class, "lift");
         marker = hardwareMap.get(Servo.class, "marker");
 
-        liftLimitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -94,8 +76,6 @@ public class Teleop15540 extends OpMode
         driveRightBack.setDirection(DcMotor.Direction.FORWARD);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        lift = new Lift15540(liftMotor, liftLimitSwitch);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -152,7 +132,7 @@ public class Teleop15540 extends OpMode
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Lift Encoder", lift.getCurrentPosition());
         telemetry.addData("Set Position", liftMotor.getTargetPosition());
-        telemetry.addData("Limit switch", liftLimitSwitch.isPressed());
+
     }
 
     /*

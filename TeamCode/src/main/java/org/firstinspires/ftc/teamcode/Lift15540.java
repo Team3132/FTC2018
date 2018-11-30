@@ -6,9 +6,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 public class Lift15540 {
     private DcMotor motor;
-    private RevTouchSensor limitSwitch;
 
-    private static int LIFT_TOP = 5000; // Lift Max Height
+    private static int LIFT_TOP = 5000; // Lift Max Height, may need to be adjusted
     private static double LIFT_SPEED = 1.0;
 
     private enum State {
@@ -21,7 +20,6 @@ public class Lift15540 {
 
     public Lift15540(DcMotor lift, RevTouchSensor limitSwitch) {
         this.motor = lift;
-        this.limitSwitch = limitSwitch;
         this.state = state.STOP;
 
         this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -36,7 +34,7 @@ public class Lift15540 {
     }
 
     public void down() {
-        if (motor.getCurrentPosition() > 0 && !limitSwitch.isPressed() && this.state != State.DOWN)
+        if (motor.getCurrentPosition() > 0 && this.state != State.DOWN)
             this.state = State.DOWN;
     }
 
@@ -54,13 +52,10 @@ public class Lift15540 {
     }
 
     public void update() {
-        if (limitSwitch.isPressed() && this.state == State.DOWN) {
-            resetEncoder();
-        }
 
         if (motor.getCurrentPosition() < LIFT_TOP && this.state == State.UP) {
             this.state = State.UP;
-        } else if (!limitSwitch.isPressed() && this.state == State.DOWN) {
+        } else if (getCurrentPosition() > 0 && this.state == State.DOWN) {
             this.state = State.DOWN;
         } else {
             this.state = State.STOP;
