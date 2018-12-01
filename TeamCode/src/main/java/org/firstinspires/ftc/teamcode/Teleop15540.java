@@ -33,6 +33,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -70,10 +71,12 @@ public class Teleop15540 extends OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
         driveLeftFront.setDirection(DcMotor.Direction.REVERSE);
         driveLeftBack.setDirection(DcMotor.Direction.REVERSE);
-        driveRightFront.setDirection(DcMotor.Direction.FORWARD);
+        driveRightFront.setDirection(DcMotor.Direction.REVERSE);
         driveRightBack.setDirection(DcMotor.Direction.FORWARD);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        lift = new Lift15540(liftMotor);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");

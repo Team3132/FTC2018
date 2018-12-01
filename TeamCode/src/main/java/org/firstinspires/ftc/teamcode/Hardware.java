@@ -13,10 +13,10 @@ public class Hardware {
     public BNO055IMU imu;
 
     public Hardware(HardwareMap hardwareMap) {
-        driveFrontLeft = hardwareMap.get(DcMotor.class, "driveFrontLeft");
-        driveBackLeft = hardwareMap.get(DcMotor.class, "driveBackLeft");
-        driveFrontRight = hardwareMap.get(DcMotor.class, "driveFrontRight");
-        driveBackRight = hardwareMap.get(DcMotor.class, "driveBackRight");
+        driveFrontLeft = hardwareMap.get(DcMotor.class, "driveLeftFront"); // 0
+        driveBackLeft = hardwareMap.get(DcMotor.class, "driveLeftBack"); // 1
+        driveFrontRight = hardwareMap.get(DcMotor.class, "driveRightFront"); // 2
+        driveBackRight = hardwareMap.get(DcMotor.class, "driveRightBack"); // 3
 
 
     }
